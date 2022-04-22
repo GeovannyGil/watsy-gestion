@@ -14,6 +14,7 @@ export const Subtitle = styled.label`
   font-family: 'Poppins', sans-serif;
   font-size: 1.4rem;
   font-weight: 400;
+
 `
 
 export const TitleMultiColor = ({ textNormal, textColorized }) => {
@@ -26,11 +27,13 @@ export const TitleMultiColor = ({ textNormal, textColorized }) => {
 
 /* TITLE LINE */
 const ContentTitleLine = styled.div`
+  margin-top: ${(props) => props.my || 0};
+  margin-bottom: ${(props) => props.my || 0};
 `
 
-export const TextIndicador = ({ text }) => {
+export const TextIndicador = ({ text, my = 0 }) => {
   return (
-    <ContentTitleLine>
+    <ContentTitleLine my={my}>
       <Subtitle>
         {text}
       </Subtitle>
