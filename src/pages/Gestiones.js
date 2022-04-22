@@ -15,6 +15,9 @@ import { useState, useEffect } from 'react'
 import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 
+// Utils
+import { removeAccents } from '../Utils/TextFormat'
+
 const Content = styled.div`
   width: 100%;
   padding: 2em;
@@ -177,10 +180,6 @@ export default function Gestiones () {
     // 4 digitos de cui
     // @
     // primer nombre, mayuscula la primera letra
-  }
-
-  const removeAccents = (str) => {
-    return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
   }
 
   return (
