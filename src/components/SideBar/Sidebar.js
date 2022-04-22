@@ -31,7 +31,6 @@ export const ContainerNav = styled.div`
 `
 export const NameLink = styled.div`
   display: inline-block;
-  font-family: 'Poppins', sans-serif;
   color: #EFEFEF;
   font-size: 1.4rem;
 `
