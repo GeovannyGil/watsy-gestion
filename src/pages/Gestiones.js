@@ -182,6 +182,24 @@ export default function Gestiones () {
     // primer nombre, mayuscula la primera letra
   }
 
+  function GeneratePassword () {
+    const data = { ...dataClient }
+
+    let passwordGenerate = ''
+    const dataCui = dataClient.cui.slice(0, 4)
+    let firstName = dataClient.names.split(' ')[0]
+    firstName = removeAccents(firstName)
+    const passwordFormat = `${dataCui}@${firstName}`
+    passwordGenerate = passwordFormat
+
+    data.password = passwordGenerate
+    setDataClient(data)
+    // Contraseña
+    // 4 digitos de cui
+    // @
+    // primer nombre, mayuscula la primera letra
+  }
+
   return (
     <Sidebar>
       <Content>
@@ -272,11 +290,11 @@ export default function Gestiones () {
                 </Input>
                 <Input>
                   <GroupButtons>
-                    <button><Ai.AiOutlineReload /></button>
+                    <button onClick={GeneratePassword}><Ai.AiOutlineReload /></button>
                     <button onClick={() => handleOnCopy('password')}><Io.IoMdCopy /></button>
                   </GroupButtons>
                   <label>Contraseña</label>
-                  <input type='password' name='password' onChange={handleOnChange} />
+                  <input value={dataClient.password} type='password' name='password' onChange={handleOnChange} />
                   <ButtonOnInput>
                     <Ai.AiFillEyeInvisible />
                   </ButtonOnInput>
