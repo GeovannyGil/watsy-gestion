@@ -4,12 +4,14 @@ import './index.css'
 import App from './App'
 import reportWebVitals from './reportWebVitals'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { ToastContainer } from 'react-toastify'
 
 import Gestiones from './pages/Gestiones'
 
 const root = ReactDOM.createRoot(document.getElementById('root'))
 root.render(
   <BrowserRouter>
+    <ToastContainer />
     <Routes>
       <Route path='/' element={<App />} />
       <Route path='/gestiones' element={<Gestiones />} />
