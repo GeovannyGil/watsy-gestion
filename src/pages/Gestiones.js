@@ -118,25 +118,7 @@ export default function Gestiones () {
       setDataClient(data)
       return
     }
-
-    if (e.target.name === 'names') {
-      data.names = e.target.value
-    }
-    if (e.target.name === 'lastNames') {
-      data.lastNames = e.target.value
-    }
-    if (e.target.name === 'cui') {
-      data.cui = e.target.value
-    }
-    if (e.target.name === 'dateBirthday') {
-      data.dateBirthday = e.target.value
-    }
-    if (e.target.name === 'email') {
-      data.email = e.target.value
-    }
-    if (e.target.name === 'password') {
-      data.password = e.target.value
-    }
+    data[e.target.name] = e.target.value
     setDataClient(data)
   }
 
