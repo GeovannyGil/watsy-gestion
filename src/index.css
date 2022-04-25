@@ -12,6 +12,7 @@ body{
   color: #EFEFEF;
   margin: 0;
   padding: 0;
+  height: 100vh;
 }
 
 h1,h2,h3,h4,h5,h6{
@@ -26,4 +27,8 @@ p{
 ::before,
 ::after {
   box-sizing: border-box;
+}
+
+#PDFOBJECTREPORT{
+  height: 100vh;
 }
