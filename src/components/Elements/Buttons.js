@@ -35,6 +35,12 @@ export const ButtonIconAlone = styled.button`
   &:hover{
     background-color: #db5000;
   }
+
+  &:disabled{
+    background-color: #b3b3b3;
+    cursor: no-drop;
+    color: #efefef;
+  }
 `
 export const ButtonSecondary = styled.button`
   background-color: transparent;
@@ -51,5 +57,29 @@ export const ButtonSecondary = styled.button`
 
   &:hover{
     background-color: #FF6F00;
+  }
+
+  &:disabled{
+    border-color: #b3b3b3;
+    cursor: no-drop;
+    color: #efefef;
+  }
+`
+
+export const GroupButtons = styled.div`
+  position: absolute;
+  top: 15%;
+  right: 2%;
+
+  & button{
+    background-color: transparent;
+    border: none;
+    color: #FF5F00;
+    font-size: 1.5em;
+    cursor: pointer;
+
+    &:hover{
+      color: #db5000;
+    }
   }
 `

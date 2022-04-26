@@ -1,21 +1,14 @@
 import styled from 'styled-components'
 
-export const GroupButtons = styled.div`
-  position: absolute;
-  top: 15%;
-  right: 2%;
-
-  & button{
-    background-color: transparent;
+export const TextArea = styled.textarea`
     border: none;
-    color: #FF5F00;
-    font-size: 1.5em;
-    cursor: pointer;
-
-    &:hover{
-      color: #db5000;
-    }
-  }
+    background-color: #171717;
+    font-size: 1em;
+    color: white;
+    padding: 1.3em;
+    width: 100%;
+    border-radius: 1.2em;
+    height: 200px;
 `
 
 export const Input = styled.div`
