@@ -36,3 +36,20 @@ export const ButtonIconAlone = styled.button`
     background-color: #db5000;
   }
 `
+export const ButtonSecondary = styled.button`
+  background-color: transparent;
+  font-size: 'Poppins';
+  width: 100%;
+  border: 2px solid #FF6F00;
+  color: #FBFBFB;
+  font-size: 1.2em;
+  font-weight: 600;
+  border-radius: 0.5em;
+  padding: 6px;
+  margin-bottom: 10px;
+  cursor: pointer;
+
+  &:hover{
+    background-color: #FF6F00;
+  }
+`
