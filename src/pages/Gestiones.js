@@ -2,11 +2,13 @@ import Sidebar from '../components/SideBar/Sidebar'
 import styled from 'styled-components'
 import * as Io from 'react-icons/io'
 import * as Ai from 'react-icons/ai'
+import * as Hi from 'react-icons/hi'
 import { TextIndicador, TitleMultiColor } from '../components/Elements/Text'
-import { Input, GroupButtons } from '../components/Elements/Inputs'
-import { ButtonOnInput, ButtonIconAlone, ButtonSecondary } from '../components/Elements/Buttons'
+import { Input, TextArea } from '../components/Elements/Inputs'
+import { ButtonOnInput, ButtonIconAlone, ButtonSecondary, GroupButtons } from '../components/Elements/Buttons'
 // import { FileComponent } from '../components/Files/Files'
 import NumberFormat from 'react-number-format'
+import ReactTooltip from 'react-tooltip'
 import { v4 as uuidv4 } from 'uuid'
 
 // SERVICES
@@ -26,11 +28,12 @@ import randomNumb from '../Utils/randomNumber'
 
 // ACORDEON
 import 'bootstrap/dist/css/bootstrap.min.css'
-import { Accordion, Card, useAccordionButton, Modal, Button } from 'react-bootstrap'
+import { Accordion, Card, useAccordionButton, Modal } from 'react-bootstrap'
 import Reporte from '../components/Report'
 
 const Content = styled.div`
   width: 100%;
+  height: 100vh;
   padding: 2em;
   display: grid;
   grid-gap: 1em;
@@ -46,7 +49,7 @@ const ContentBody = styled.div`
 const ContentSpaceGestion = styled.div`
   padding: 2em;
   background-color: #232323;
-  height: 100%;
+  height: fit-content;
   border-radius: 1em;
 `
 const ContentGestionesDocs = styled.div`
@@ -138,11 +141,18 @@ export default function Gestiones () {
     place: '',
     flix: ''
   })
-  // eslint-disable-next-line
   const [nit, setNit] = useState({
     type: 'nit',
-    emailNit: '',
-    passwordNit: ''
+    otherData: ''
+  })
+  const [agenciaVirtual, setAgenciaVirtual] = useState({
+    type: 'agenciaVirtual',
+    emailAgencia: '',
+    passwordAgencia: ''
+  })
+  const [otherService, setOtherService] = useState({
+    type: 'otherService',
+    otherService: ''
   })
   const [checkState, setCheckState] = useState({
     penales: false,
@@ -152,6 +162,7 @@ export default function Gestiones () {
   })
   const [dataClientReport, setDataClientReport] = useState({})
   const [show, setShow] = useState(false)
+  const [stateSave, setStateSave] = useState(false)
 
   function generateDateForReport () {
     const data = {}
@@ -169,6 +180,10 @@ export default function Gestiones () {
     data.policiales = {
       cui: dataClient.cui,
       password: policiales.passwordPoliciales
+    }
+    data.agenciaVirtual = {
+      email: agenciaVirtual.emailAgencia,
+      password: agenciaVirtual.passwordAgencia
     }
     console.log(data)
     setDataClientReport(data)
@@ -220,10 +235,23 @@ export default function Gestiones () {
     data[e.target.name] = e.target.value
     setPoliciales(data)
   }
-  function handleOnNit (e) {
+
+  function handleOnChangeNit (e) {
     const data = { ...nit }
     data[e.target.name] = e.target.value
     setNit(data)
+  }
+
+  function handleOnOtherService (e) {
+    const data = { ...otherService }
+    data[e.target.name] = e.target.value
+    setOtherService(data)
+  }
+
+  function handleOnAgenciaVirtual (e) {
+    const data = { ...agenciaVirtual }
+    data[e.target.name] = e.target.value
+    setAgenciaVirtual(data)
   }
   // function handleOnSubmit () {}
   function handleOnCopy (textCopy, gestion = '') {
@@ -236,6 +264,9 @@ export default function Gestiones () {
       }
       if (gestion === 'policiales') {
         text = policiales[textCopy]
+      }
+      if (gestion === 'agenciaVirtual') {
+        text = agenciaVirtual[textCopy]
       }
     }
     navigator.clipboard.writeText(text)
@@ -313,6 +344,10 @@ export default function Gestiones () {
     )
   }
 
+  function handleOnSaveData () {
+    setStateSave(true)
+  }
+
   return (
     <Sidebar>
       <Content>
@@ -320,19 +355,45 @@ export default function Gestiones () {
           <ContentHeader>
             <TitleMultiColor textNormal='Crear' textColorized='Gestiones.' />
             <GroupButtonsHeaderActions>
-              <ButtonIconAlone>
+              <ButtonIconAlone disabled={!stateSave} onClick={handleShow}>
+                <Hi.HiDocumentDownload />
+              </ButtonIconAlone>
+              <ButtonIconAlone disabled={!stateSave}>
                 <Io.IoMdShare />
               </ButtonIconAlone>
-              <ButtonIconAlone>
+              <ButtonIconAlone data-tip data-for='saveData' onClick={handleOnSaveData}>
                 <Io.IoMdSave />
               </ButtonIconAlone>
             </GroupButtonsHeaderActions>
           </ContentHeader>
+          {/* TOOLTIPS */}
+          <ReactTooltip place='top' id='membresia' type='dark' effect='solid'>
+            <span>Esta función require una membresía</span>
+          </ReactTooltip>
+          <ReactTooltip place='top' id='saveData' type='dark' effect='solid'>
+            <span>Guardar datos del cliente</span>
+          </ReactTooltip>
+          <ReactTooltip place='top' id='copyTooltip' type='dark' effect='solid'>
+            <span>Copiar al portapapeles</span>
+          </ReactTooltip>
+          <ReactTooltip place='top' id='generateEmail' type='dark' effect='solid'>
+            <span>Generar correo</span>
+          </ReactTooltip>
+          <ReactTooltip place='top' id='generatePassword' type='dark' effect='solid'>
+            <span>Generar contraseña</span>
+          </ReactTooltip>
+          <ReactTooltip place='top' id='syncEmail' type='dark' effect='solid'>
+            <span>Sincronizar con correo electrónico</span>
+          </ReactTooltip>
+          <ReactTooltip place='top' id='syncPassword' type='dark' effect='solid'>
+            <span>Sincronizar con contraseña maestra</span>
+          </ReactTooltip>
+          {/* TOOLTIPS */}
           <ContentBody>
             <TextIndicador text='Datos Generales' my='10px' />
             <Input marginBottom='15px'>
               <GroupButtons>
-                <button onClick={() => handleOnCopy('names')}><Io.IoMdCopy /></button>
+                <button onClick={() => handleOnCopy('names')} data-tip data-for='copyTooltip'><Io.IoMdCopy /></button>
               </GroupButtons>
               <label>Nombres</label>
               <input type='text' name='names' onChange={handleOnChange} value={dataClient.names} />
@@ -341,14 +402,14 @@ export default function Gestiones () {
               <GroupGridContentDouble>
                 <Input>
                   <GroupButtons>
-                    <button onClick={() => handleOnCopy('lastNames')}><Io.IoMdCopy /></button>
+                    <button onClick={() => handleOnCopy('lastNames')} data-tip data-for='copyTooltip'><Io.IoMdCopy /></button>
                   </GroupButtons>
                   <label>Apellidos</label>
                   <input type='text' name='lastNames' onChange={handleOnChange} value={dataClient.lastNames} />
                 </Input>
                 <Input>
                   <GroupButtons>
-                    <button onClick={() => handleOnCopy('phone')}><Io.IoMdCopy /></button>
+                    <button onClick={() => handleOnCopy('phone')} data-tip data-for='copyTooltip'><Io.IoMdCopy /></button>
                   </GroupButtons>
                   <label>Teléfono</label>
                   <NumberFormat
@@ -365,7 +426,7 @@ export default function Gestiones () {
               <GroupGridContentDouble>
                 <Input>
                   <GroupButtons>
-                    <button onClick={() => handleOnCopy('dateBirthday')}><Io.IoMdCopy /></button>
+                    <button onClick={() => handleOnCopy('dateBirthday')} data-tip data-for='copyTooltip'><Io.IoMdCopy /></button>
                   </GroupButtons>
                   <label>Fecha de nacimiento</label>
                   <NumberFormat
@@ -380,7 +441,7 @@ export default function Gestiones () {
                 </Input>
                 <Input>
                   <GroupButtons>
-                    <button onClick={() => handleOnCopy('direction')}><Io.IoMdCopy /></button>
+                    <button onClick={() => handleOnCopy('direction')} data-tip data-for='copyTooltip'><Io.IoMdCopy /></button>
                   </GroupButtons>
                   <label>Dirección Domiciliar</label>
                   <input type='text' name='direction' onChange={handleOnChange} value={dataClient.direction} />
@@ -389,7 +450,7 @@ export default function Gestiones () {
               <GroupGridContentDouble>
                 <Input>
                   <GroupButtons>
-                    <button onClick={() => handleOnCopy('cui')}><Io.IoMdCopy /></button>
+                    <button onClick={() => handleOnCopy('cui')} data-tip data-for='copyTooltip'><Io.IoMdCopy /></button>
                   </GroupButtons>
                   <label>CUI</label>
                   <NumberFormat
@@ -404,7 +465,7 @@ export default function Gestiones () {
                 </Input>
                 <Input>
                   <GroupButtons>
-                    <button onClick={() => handleOnCopy('nit')}><Io.IoMdCopy /></button>
+                    <button onClick={() => handleOnCopy('nit')} data-tip data-for='copyTooltip'><Io.IoMdCopy /></button>
                   </GroupButtons>
                   <label>NIT</label>
                   <input type='text' name='nit' onChange={handleOnChange} style={{ textTransform: 'uppercase' }} value={dataClient.nit} />
@@ -414,16 +475,16 @@ export default function Gestiones () {
                 <Input>
                   <GroupButtons>
                     <button><Ai.AiFillCheckCircle /></button>
-                    <button onClick={GenerateMail}><Ai.AiOutlineReload /></button>
-                    <button onClick={() => handleOnCopy('email')}><Io.IoMdCopy /></button>
+                    <button onClick={GenerateMail} data-tip data-for='generateEmail'><Ai.AiOutlineReload /></button>
+                    <button onClick={() => handleOnCopy('email')} data-tip data-for='copyTooltip'><Io.IoMdCopy /></button>
                   </GroupButtons>
                   <label>Correo Electrónico</label>
                   <input tyep='email' name='email' onChange={handleOnChange} value={dataClient.email} />
                 </Input>
                 <Input>
                   <GroupButtons>
-                    <button onClick={GeneratePassword}><Ai.AiOutlineReload /></button>
-                    <button onClick={() => handleOnCopy('password')}><Io.IoMdCopy /></button>
+                    <button onClick={GeneratePassword} data-tip data-for='generatePassword'><Ai.AiOutlineReload /></button>
+                    <button onClick={() => handleOnCopy('password')} data-tip data-for='copyTooltip'><Io.IoMdCopy /></button>
                   </GroupButtons>
                   <label>Contraseña</label>
                   <input value={dataClient.password} type='password' name='password' onChange={handleOnChange} />
@@ -459,16 +520,16 @@ export default function Gestiones () {
                     <div>
                       <Input marginBottom='15px'>
                         <GroupButtons>
-                          <button onClick={() => { setPenales({ ...penales, emailPenales: dataClient.email }) }}><Io.IoMdSync /></button>
-                          <button onClick={() => handleOnCopy('emailPenales', 'penales')}><Io.IoMdCopy /></button>
+                          <button onClick={() => { setPenales({ ...penales, emailPenales: dataClient.email }) }} data-tip data-for='syncEmail'><Io.IoMdSync /></button>
+                          <button onClick={() => handleOnCopy('emailPenales', 'penales')} data-tip data-for='copyTooltip'><Io.IoMdCopy /></button>
                         </GroupButtons>
                         <label>Correo Electrónico</label>
                         <input tyep='email' value={penales.emailPenales} name='emailPenales' onChange={handleOnChangePenales} />
                       </Input>
                       <Input>
                         <GroupButtons>
-                          <button onClick={() => { setPenales({ ...penales, passwordPenales: dataClient.password }) }}><Io.IoMdSync /></button>
-                          <button onClick={() => handleOnCopy('passwordPenales', 'penales')}><Io.IoMdCopy /></button>
+                          <button onClick={() => { setPenales({ ...penales, passwordPenales: dataClient.password }) }} data-tip data-for='syncPassword'><Io.IoMdSync /></button>
+                          <button onClick={() => handleOnCopy('passwordPenales', 'penales')} data-tip data-for='copyTooltip'><Io.IoMdCopy /></button>
                         </GroupButtons>
                         <label>Contraseña</label>
                         <input type='password' value={penales.passwordPenales} name='passwordPenales' onChange={handleOnChangePenales} />
@@ -478,7 +539,7 @@ export default function Gestiones () {
                       </Input>
                     </div>
                     <div>
-                      <ButtonSecondary>Generar Reporte</ButtonSecondary>
+                      <ButtonSecondary data-tip data-for='membresia'>Subir Archivo</ButtonSecondary>
                     </div>
                   </div>
                 </Card.Body>
@@ -498,16 +559,16 @@ export default function Gestiones () {
                     <div>
                       <Input marginBottom='15px'>
                         <GroupButtons>
-                          <button onClick={() => { setPoliciales({ ...policiales, emailPoliciales: dataClient.email }) }}><Io.IoMdSync /></button>
-                          <button onClick={() => handleOnCopy('emailPoliciales', 'policiales')}><Io.IoMdCopy /></button>
+                          <button onClick={() => { setPoliciales({ ...policiales, emailPoliciales: dataClient.email }) }} data-tip data-for='syncEmail'><Io.IoMdSync /></button>
+                          <button onClick={() => handleOnCopy('emailPoliciales', 'policiales')} data-tip data-for='copyTooltip'><Io.IoMdCopy /></button>
                         </GroupButtons>
                         <label>Correo Electrónico</label>
                         <input tyep='email' name='emailPoliciales' value={policiales.emailPoliciales} onChange={handleOnChangePoliciales} />
                       </Input>
                       <Input marginBottom='15px'>
                         <GroupButtons>
-                          <button onClick={() => { setPoliciales({ ...policiales, passwordPoliciales: dataClient.password }) }}><Io.IoMdSync /></button>
-                          <button onClick={() => handleOnCopy('passwordPoliciales', 'policiales')}><Io.IoMdCopy /></button>
+                          <button onClick={() => { setPoliciales({ ...policiales, passwordPoliciales: dataClient.password }) }} data-tip data-for='syncPassword'><Io.IoMdSync /></button>
+                          <button onClick={() => handleOnCopy('passwordPoliciales', 'policiales')} data-tip data-for='copyTooltip'><Io.IoMdCopy /></button>
                         </GroupButtons>
                         <label>Contraseña</label>
                         <input type='password' name='passwordPoliciales' value={policiales.passwordPoliciales} onChange={handleOnChangePoliciales} />
@@ -518,7 +579,7 @@ export default function Gestiones () {
                       <Input marginBottom='15px'>
                         <GroupButtons>
                           <button onClick={GeneratePlace}><Ai.AiOutlineReload /></button>
-                          <button onClick={() => handleOnCopy('place', 'policiales')}><Io.IoMdCopy /></button>
+                          <button onClick={() => handleOnCopy('place', 'policiales')} data-tip data-for='copyTooltip'><Io.IoMdCopy /></button>
                         </GroupButtons>
                         <label>Lugar</label>
                         <input type='text' name='place' value={policiales.place} onChange={handleOnChangePoliciales} />
@@ -526,14 +587,14 @@ export default function Gestiones () {
                       <Input marginBottom='15px'>
                         <GroupButtons>
                           <button onClick={GenerateFlix}><Ai.AiOutlineReload /></button>
-                          <button onClick={() => handleOnCopy('flix', 'policiales')}><Io.IoMdCopy /></button>
+                          <button onClick={() => handleOnCopy('flix', 'policiales')} data-tip data-for='copyTooltip'><Io.IoMdCopy /></button>
                         </GroupButtons>
                         <label>Pelicula</label>
                         <input type='text' name='flix' value={policiales.flix} onChange={handleOnChangePoliciales} />
                       </Input>
                     </div>
                     <div>
-                      <ButtonSecondary>Generar Reporte</ButtonSecondary>
+                      <ButtonSecondary data-tip data-for='membresia'>Subir Archivo</ButtonSecondary>
                     </div>
                   </div>
                 </Card.Body>
@@ -551,38 +612,68 @@ export default function Gestiones () {
                 <Card.Body>
                   <div className='contentGestion'>
                     <div>
+                      <TextArea placeholder='Datos adicionales de la creación del nit' name='otherData' value={nit.otherData} onChange={handleOnChangeNit} />
+                    </div>
+                    <div>
+                      <ButtonSecondary data-tip data-for='membresia'>Subir Archivo</ButtonSecondary>
+                    </div>
+                  </div>
+                </Card.Body>
+              </Accordion.Collapse>
+            </Card>
+            <Card>
+              <Card.Header>
+                <div className='round'>
+                  <input type='checkbox' id='agenciaVirtual' name='agenciaVirtual' checked={checkState.agenciaVirtual} value='agenciaVirtual' onChange={checkGestion} />
+                  <label htmlFor='agenciaVirtual' />
+                </div>
+                <CustomToggle eventKey='3'>Agencia Virtual</CustomToggle>
+              </Card.Header>
+              <Accordion.Collapse eventKey='3'>
+                <Card.Body>
+                  <div className='contentGestion'>
+                    <div>
                       <Input marginBottom='15px'>
                         <GroupButtons>
-                          <button onClick={() => { setNit({ ...nit, emailNit: dataClient.email }) }}><Io.IoMdSync /></button>
-                          <button onClick={() => handleOnCopy('emailNit', 'nit')}><Io.IoMdCopy /></button>
+                          <button onClick={() => { setAgenciaVirtual({ ...agenciaVirtual, emailAgencia: dataClient.email }) }} data-tip data-for='syncEmail'><Io.IoMdSync /></button>
+                          <button onClick={() => handleOnCopy('emailAgencia', 'agenciaVirtual')} data-tip data-for='copyTooltip'><Io.IoMdCopy /></button>
                         </GroupButtons>
                         <label>Correo Electrónico</label>
-                        <input tyep='email' value={nit.emailNit} name='emailNit' onChange={handleOnNit} />
+                        <input tyep='email' value={agenciaVirtual.emailAgencia} name='emailAgencia' onChange={handleOnAgenciaVirtual} />
                       </Input>
                       <Input>
                         <GroupButtons>
-                          <button onClick={() => { setNit({ ...nit, passwordNit: dataClient.password }) }}><Io.IoMdSync /></button>
-                          <button onClick={() => handleOnCopy('passwordNit', 'nit')}><Io.IoMdCopy /></button>
+                          <button onClick={() => { setAgenciaVirtual({ ...agenciaVirtual, passwordAgencia: dataClient.password }) }} data-tip data-for='syncPassword'><Io.IoMdSync /></button>
+                          <button onClick={() => handleOnCopy('passwordAgencia', 'agenciaVirtual')} data-tip data-for='copyTooltip'><Io.IoMdCopy /></button>
                         </GroupButtons>
                         <label>Contraseña</label>
-                        <input type='password' value={nit.passwordNit} name='passwordNit' onChange={handleOnNit} />
+                        <input type='password' value={agenciaVirtual.passwordAgencia} name='passwordAgencia' onChange={handleOnAgenciaVirtual} />
                         <ButtonOnInput>
                           <Ai.AiFillEyeInvisible />
                         </ButtonOnInput>
                       </Input>
                     </div>
                     <div>
-                      <ButtonSecondary>Generar Reporte</ButtonSecondary>
+                      <ButtonSecondary data-tip data-for='membresia'>Subir Archivo</ButtonSecondary>
                     </div>
+                  </div>
+                </Card.Body>
+              </Accordion.Collapse>
+            </Card>
+            <Card>
+              <Card.Header className='d-block'>
+                <CustomToggle eventKey='4' className='ml-4'>Otro servicio</CustomToggle>
+              </Card.Header>
+              <Accordion.Collapse eventKey='4'>
+                <Card.Body>
+                  <div className='contentGestion d-block'>
+                    <TextArea placeholder='Datos adicionales del cliente' name='otherService' value={otherService.otherService} onChange={handleOnOtherService} />
                   </div>
                 </Card.Body>
               </Accordion.Collapse>
             </Card>
           </Accordion>
         </ContentGestionesDocs>
-        <Button className='me-2 mb-2' onClick={handleShow}>
-          Full screen
-        </Button>
         {
           show ? <ShowModalReport show={show} onSetShow={setShow} data={dataClientReport} /> : ''
         }
