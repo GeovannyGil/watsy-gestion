@@ -100,18 +100,17 @@ const GroupButtonsHeaderActions = styled.div`
   }
 `
 
-const dataClientReport = {
-  names: 'John',
-  lastNames: 'Due',
-  phone: '43961286',
-  email: 'john@gmail.com',
-  password: '123456',
-  gestiones: {
-    penales: false,
-    policiales: false,
-    nit: false,
-    agenciaVirtual: false
-  }
+function ShowModalReport ({ show, onSetShow, data }) {
+  return (
+    <Modal show={show} fullscreen onHide={() => onSetShow(false)}>
+      <Modal.Header closeButton>
+        <Modal.Title>Reporte</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <Reporte dataClientReport={data} />
+      </Modal.Body>
+    </Modal>
+  )
 }
 
 export default function Gestiones () {
@@ -139,19 +138,44 @@ export default function Gestiones () {
     place: '',
     flix: ''
   })
-
+  // eslint-disable-next-line
+  const [nit, setNit] = useState({
+    type: 'nit',
+    emailNit: '',
+    passwordNit: ''
+  })
   const [checkState, setCheckState] = useState({
     penales: false,
     policiales: false,
     nit: false,
     agenciaVirtual: false
   })
-
-  const [fullscreen, setFullscreen] = useState(true)
+  const [dataClientReport, setDataClientReport] = useState({})
   const [show, setShow] = useState(false)
 
-  function handleShow (breakpoint) {
-    setFullscreen(breakpoint)
+  function generateDateForReport () {
+    const data = {}
+    data.names = dataClient.names
+    data.lastNames = dataClient.lastNames
+    data.phone = `${dataClient.phone.slice(0, 4)}-${dataClient.phone.slice(4, 8)}`
+    data.email = dataClient.email
+    data.password = dataClient.password
+    data.gestiones = { ...checkState }
+    data.nit = dataClient.nit
+    data.penales = {
+      email: penales.emailPenales,
+      password: penales.passwordPenales
+    }
+    data.policiales = {
+      cui: dataClient.cui,
+      password: policiales.passwordPoliciales
+    }
+    console.log(data)
+    setDataClientReport(data)
+  }
+
+  function handleShow () {
+    generateDateForReport()
     setShow(true)
   }
 
@@ -512,17 +536,12 @@ export default function Gestiones () {
             </Card>
           </Accordion>
         </ContentGestionesDocs>
-        <Button className='me-2 mb-2' onClick={() => handleShow(true)}>
+        <Button className='me-2 mb-2' onClick={handleShow}>
           Full screen
         </Button>
-        <Modal show={show} fullscreen={fullscreen} onHide={() => setShow(false)}>
-          <Modal.Header closeButton>
-            <Modal.Title>Reporte</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <Reporte dataClientReport={dataClientReport} />
-          </Modal.Body>
-        </Modal>
+        {
+          show ? <ShowModalReport show={show} onSetShow={setShow} data={dataClientReport} /> : ''
+        }
       </Content>
     </Sidebar>
   )
