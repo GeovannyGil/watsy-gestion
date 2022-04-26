@@ -7,7 +7,6 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { ToastContainer } from 'react-toastify'
 
 import Gestiones from './pages/Gestiones'
-import Report from './pages/Report'
 
 const root = ReactDOM.createRoot(document.getElementById('root'))
 root.render(
@@ -16,7 +15,6 @@ root.render(
     <Routes>
       <Route path='/' element={<App />} />
       <Route path='/gestiones' element={<Gestiones />} />
-      <Route path='/report' element={<Report />} />
     </Routes>
   </BrowserRouter>
 )
