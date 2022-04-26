@@ -110,86 +110,90 @@ const Reporte = ({ dataClientReport }) => {
   // DATA ANTECEDENTES PENALES
   // SE SUMA 88 DESPUES DE CADA SERVICIO
   let positionRectangle = 322
-
-  doc.addImage(squarePenales, 'PNG', 91, positionRectangle, 430, 71)
-  doc.addImage(logoPenales, 'PNG', 102, positionRectangle + 30, 28, 30)
-
   doc.setFontSize(10)
-  doc.setTextColor('#232323')
-  doc.setFont('Poppins-SemiBold', 'normal')
-  doc.text('DATOS DE ANTECEDENTES PENALES', 140, positionRectangle + 16, { charSpace: 0.5 })
+  if (dataClientReport.gestiones.penales === true) {
+    doc.addImage(squarePenales, 'PNG', 91, positionRectangle, 430, 71)
+    doc.addImage(logoPenales, 'PNG', 102, positionRectangle + 30, 28, 30)
 
-  doc.setFont('Poppins-Medium', 'normal')
+    doc.setTextColor('#232323')
+    doc.setFont('Poppins-SemiBold', 'normal')
+    doc.text('DATOS DE ANTECEDENTES PENALES', 140, positionRectangle + 16, { charSpace: 0.5 })
 
-  doc.setTextColor('#232323')
-  doc.text('Correo electrónico:', 140, positionRectangle + 40)
-  doc.setTextColor('#5E5E5E')
-  doc.text('info@geovannygil.com', 266, positionRectangle + 40)
+    doc.setFont('Poppins-Medium', 'normal')
 
-  doc.setTextColor('#232323')
-  doc.text('Contraseña:', 140, positionRectangle + 60)
-  doc.setTextColor('#5E5E5E')
-  doc.text('UnaContraseñ@123', 266, positionRectangle + 60)
+    doc.setTextColor('#232323')
+    doc.text('Correo electrónico:', 140, positionRectangle + 40)
+    doc.setTextColor('#5E5E5E')
+    doc.text(dataClientReport.penales?.email, 266, positionRectangle + 40)
+
+    doc.setTextColor('#232323')
+    doc.text('Contraseña:', 140, positionRectangle + 60)
+    doc.setTextColor('#5E5E5E')
+    doc.text(dataClientReport.penales?.password, 266, positionRectangle + 60)
+    positionRectangle += 88
+  }
 
   // DATA ANTECEDENTES POLICIALES
-  positionRectangle = 405
+  if (dataClientReport.gestiones.policiales === true) {
+    doc.addImage(squarePenales, 'PNG', 91, positionRectangle, 430, 71)
+    doc.addImage(logoPoliciales, 'PNG', 102, positionRectangle + 30, 28, 30)
 
-  doc.addImage(squarePenales, 'PNG', 91, positionRectangle, 430, 71)
-  doc.addImage(logoPoliciales, 'PNG', 102, positionRectangle + 30, 28, 30)
+    doc.setFont('Poppins-SemiBold', 'normal')
+    doc.setTextColor('#232323')
+    doc.text('DATOS DE ANTECEDENTES POLICIALES', 140, positionRectangle + 16, { charSpace: 0.5 })
 
-  doc.setFont('Poppins-SemiBold', 'normal')
-  doc.setTextColor('#232323')
-  doc.text('DATOS DE ANTECEDENTES POLICIALES', 140, positionRectangle + 16, { charSpace: 0.5 })
+    doc.setFont('Poppins-Medium', 'normal')
 
-  doc.setFont('Poppins-Medium', 'normal')
+    doc.setTextColor('#232323')
+    doc.text('No. de Identificación:', 140, positionRectangle + 40)
+    doc.setTextColor('#5E5E5E')
+    doc.text(dataClientReport.policiales?.cui, 266, positionRectangle + 40)
 
-  doc.setTextColor('#232323')
-  doc.text('No. de Identificación:', 140, positionRectangle + 40)
-  doc.setTextColor('#5E5E5E')
-  doc.text('info@geovannygil.com', 266, positionRectangle + 40)
-
-  doc.setTextColor('#232323')
-  doc.text('Contraseña:', 140, positionRectangle + 60)
-  doc.setTextColor('#5E5E5E')
-  doc.text('UnaContraseñ@123', 266, positionRectangle + 60)
+    doc.setTextColor('#232323')
+    doc.text('Contraseña:', 140, positionRectangle + 60)
+    doc.setTextColor('#5E5E5E')
+    doc.text(dataClientReport.policiales?.password, 266, positionRectangle + 60)
+    positionRectangle += 88
+  }
 
   // DATA NIT
-  positionRectangle = 488
+  if (dataClientReport.gestiones.nit === true) {
+    doc.addImage(squarePenales, 'PNG', 91, positionRectangle, 430, 71)
+    doc.addImage(logoSAT, 'PNG', 102, positionRectangle + 30, 28, 30)
 
-  doc.addImage(squarePenales, 'PNG', 91, positionRectangle, 430, 71)
-  doc.addImage(logoSAT, 'PNG', 102, positionRectangle + 30, 28, 30)
+    doc.setFont('Poppins-SemiBold', 'normal')
+    doc.setTextColor('#232323')
+    doc.text('DATO DEL NIT', 140, positionRectangle + 16, { charSpace: 0.5 })
 
-  doc.setFont('Poppins-SemiBold', 'normal')
-  doc.setTextColor('#232323')
-  doc.text('DATO DEL NIT', 140, positionRectangle + 16, { charSpace: 0.5 })
+    doc.setFont('Poppins-Medium', 'normal')
 
-  doc.setFont('Poppins-Medium', 'normal')
-
-  doc.setTextColor('#232323')
-  doc.text('No. de NIT:', 140, positionRectangle + 48)
-  doc.setTextColor('#5E5E5E')
-  doc.text('123456789', 220, positionRectangle + 48)
+    doc.setTextColor('#232323')
+    doc.text('No. de NIT:', 140, positionRectangle + 48)
+    doc.setTextColor('#5E5E5E')
+    doc.text(dataClientReport?.nit, 220, positionRectangle + 48)
+    positionRectangle += 88
+  }
 
   // DATA GENCIA VIRTUAL
-  positionRectangle = 571
+  if (dataClientReport.gestiones.agenciaVirtual === true) {
+    doc.addImage(squarePenales, 'PNG', 91, positionRectangle, 430, 71)
+    doc.addImage(logoAgenciaVirtual, 'PNG', 102, positionRectangle + 30, 28, 30)
 
-  doc.addImage(squarePenales, 'PNG', 91, positionRectangle, 430, 71)
-  doc.addImage(logoAgenciaVirtual, 'PNG', 102, positionRectangle + 30, 28, 30)
+    doc.setFont('Poppins-SemiBold', 'normal')
+    doc.setTextColor('#232323')
+    doc.text('DATOS DE LA AGENCIA VIRTUAL', 140, positionRectangle + 16, { charSpace: 0.5 })
 
-  doc.setFont('Poppins-SemiBold', 'normal')
-  doc.setTextColor('#232323')
-  doc.text('DATOS DE LA AGENCIA VIRTUAL', 140, positionRectangle + 16, { charSpace: 0.5 })
+    doc.setFont('Poppins-Medium', 'normal')
+    doc.setTextColor('#232323')
+    doc.text('Usuario:', 140, positionRectangle + 40)
+    doc.setTextColor('#5E5E5E')
+    doc.text('123456789', 266, positionRectangle + 40)
 
-  doc.setFont('Poppins-Medium', 'normal')
-  doc.setTextColor('#232323')
-  doc.text('Usuario:', 140, positionRectangle + 40)
-  doc.setTextColor('#5E5E5E')
-  doc.text('123456789', 266, positionRectangle + 40)
-
-  doc.setTextColor('#232323')
-  doc.text('Contraseña:', 140, positionRectangle + 60)
-  doc.setTextColor('#5E5E5E')
-  doc.text('UnaContraseñ@123', 266, positionRectangle + 60)
+    doc.setTextColor('#232323')
+    doc.text('Contraseña:', 140, positionRectangle + 60)
+    doc.setTextColor('#5E5E5E')
+    doc.text('UnaContraseñ@123', 266, positionRectangle + 60)
+  }
 
   // FOOTER
   doc.setFont('Montserrat-Medium', 'normal')
