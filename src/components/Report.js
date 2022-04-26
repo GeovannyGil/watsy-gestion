@@ -157,7 +157,7 @@ const Reporte = ({ dataClientReport }) => {
   }
 
   // DATA NIT
-  if (dataClientReport.gestiones.nit === true) {
+  if (dataClientReport.gestiones.gestionNit === true) {
     doc.addImage(squarePenales, 'PNG', 91, positionRectangle, 430, 71)
     doc.addImage(logoSAT, 'PNG', 102, positionRectangle + 30, 28, 30)
 
