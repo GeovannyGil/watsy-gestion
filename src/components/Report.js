@@ -187,12 +187,12 @@ const Reporte = ({ dataClientReport }) => {
     doc.setTextColor('#232323')
     doc.text('Usuario:', 140, positionRectangle + 40)
     doc.setTextColor('#5E5E5E')
-    doc.text('123456789', 266, positionRectangle + 40)
+    doc.text(dataClientReport?.nit, 266, positionRectangle + 40)
 
     doc.setTextColor('#232323')
     doc.text('Contraseña:', 140, positionRectangle + 60)
     doc.setTextColor('#5E5E5E')
-    doc.text('UnaContraseñ@123', 266, positionRectangle + 60)
+    doc.text(dataClientReport.agenciaVirtual?.password, 266, positionRectangle + 60)
   }
 
   // FOOTER
