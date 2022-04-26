@@ -147,7 +147,7 @@ export default function Gestiones () {
   const [checkState, setCheckState] = useState({
     penales: false,
     policiales: false,
-    nit: false,
+    gestionNit: false,
     agenciaVirtual: false
   })
   const [dataClientReport, setDataClientReport] = useState({})
@@ -219,6 +219,11 @@ export default function Gestiones () {
     const data = { ...policiales }
     data[e.target.name] = e.target.value
     setPoliciales(data)
+  }
+  function handleOnNit (e) {
+    const data = { ...nit }
+    data[e.target.name] = e.target.value
+    setNit(data)
   }
   // function handleOnSubmit () {}
   function handleOnCopy (textCopy, gestion = '') {
@@ -525,6 +530,45 @@ export default function Gestiones () {
                         </GroupButtons>
                         <label>Pelicula</label>
                         <input type='text' name='flix' value={policiales.flix} onChange={handleOnChangePoliciales} />
+                      </Input>
+                    </div>
+                    <div>
+                      <ButtonSecondary>Generar Reporte</ButtonSecondary>
+                    </div>
+                  </div>
+                </Card.Body>
+              </Accordion.Collapse>
+            </Card>
+            <Card>
+              <Card.Header>
+                <div className='round'>
+                  <input type='checkbox' id='gestionNit' name='gestionNit' checked={checkState.gestionNit} value='gestionNit' onChange={checkGestion} />
+                  <label htmlFor='gestionNit' />
+                </div>
+                <CustomToggle eventKey='2'>NIT</CustomToggle>
+              </Card.Header>
+              <Accordion.Collapse eventKey='2'>
+                <Card.Body>
+                  <div className='contentGestion'>
+                    <div>
+                      <Input marginBottom='15px'>
+                        <GroupButtons>
+                          <button onClick={() => { setNit({ ...nit, emailNit: dataClient.email }) }}><Io.IoMdSync /></button>
+                          <button onClick={() => handleOnCopy('emailNit', 'nit')}><Io.IoMdCopy /></button>
+                        </GroupButtons>
+                        <label>Correo Electrónico</label>
+                        <input tyep='email' value={nit.emailNit} name='emailNit' onChange={handleOnNit} />
+                      </Input>
+                      <Input>
+                        <GroupButtons>
+                          <button onClick={() => { setNit({ ...nit, passwordNit: dataClient.password }) }}><Io.IoMdSync /></button>
+                          <button onClick={() => handleOnCopy('passwordNit', 'nit')}><Io.IoMdCopy /></button>
+                        </GroupButtons>
+                        <label>Contraseña</label>
+                        <input type='password' value={nit.passwordNit} name='passwordNit' onChange={handleOnNit} />
+                        <ButtonOnInput>
+                          <Ai.AiFillEyeInvisible />
+                        </ButtonOnInput>
                       </Input>
                     </div>
                     <div>
