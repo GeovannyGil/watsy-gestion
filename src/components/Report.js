@@ -8,15 +8,13 @@ import fontMontserratMedium from '../assets/fonts/Montserrat-Medium-normal'
 // import fontMontserratSemibold from '../assets/fonts/Montserrat-SemiBold-normal'
 // IMAGES
 import backgroundReport from '../assets/img/Background.png'
-// import guia from '../assets/img/guia.jpg'
 import squarePenales from '../assets/img/SquareGestiones.png'
 import logoPenales from '../assets/img/logoPenales.png'
 import logoPoliciales from '../assets/img/logoPoliciales.png'
 import logoSAT from '../assets/img/logoSAT.png'
 import logoAgenciaVirtual from '../assets/img/logoAgenciaVirtuales.png'
-// Default export is a4 paper, portrait, using millimeters for units
 
-const Reporte = () => {
+const Reporte = ({ dataClientReport }) => {
   // CREATE DOCUMENT PDF
   // eslint-disable-next-line new-cap
   const doc = new jsPDF({
@@ -45,8 +43,6 @@ const Reporte = () => {
   const height = doc.internal.pageSize.getHeight()
 
   // Background image
-  // doc.addImage(guia, 'JPG', 0, 0, width, height)
-
   doc.addImage(backgroundReport, 'PNG', 0, 0, width, height)
   // IMAGE OF SERVICE
   doc.addImage(service, 'PNG', 41.5, 42, 175.7375, 48.48)
@@ -85,25 +81,25 @@ const Reporte = () => {
   doc.setTextColor('#232323')
   doc.text('Nombre completo:', 91, textPositionDataClient)
   doc.setTextColor('#5E5E5E')
-  doc.text('Kevin Geovanny Brandon Gil Ramos', 204, textPositionDataClient)
+  doc.text(`${dataClientReport?.names} ${dataClientReport?.lastNames}`, 204, textPositionDataClient)
 
   textPositionDataClient += 20
   doc.setTextColor('#232323')
   doc.text('Télefono:', 91, textPositionDataClient)
   doc.setTextColor('#5E5E5E')
-  doc.text('4396-1286', 204, textPositionDataClient)
+  doc.text(dataClientReport?.phone, 204, textPositionDataClient)
 
   textPositionDataClient += 20
   doc.setTextColor('#232323')
   doc.text('Correo electrónico:', 91, textPositionDataClient)
   doc.setTextColor('#5E5E5E')
-  doc.text('info@geovannygil.com', 204, textPositionDataClient)
+  doc.text(dataClientReport?.email, 204, textPositionDataClient)
 
   textPositionDataClient += 20
   doc.setTextColor('#232323')
   doc.text('Contraseña:', 91, textPositionDataClient)
   doc.setTextColor('#5E5E5E')
-  doc.text('UnaContraseñ@123', 204, textPositionDataClient)
+  doc.text(dataClientReport?.password, 204, textPositionDataClient)
 
   // TITLE DATA GENERAL
   doc.setFont('Poppins-Bold', 'normal')
@@ -220,11 +216,4 @@ const Reporte = () => {
   return <PDFObject url={url} width='100%' height='100%' containerId='PDFOBJECTREPORT' />
 }
 
-export default function Report () {
-  return (
-    <div>
-      <h1>Report</h1>
-      <Reporte />
-    </div>
-  )
-}
+export default Reporte
