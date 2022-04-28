@@ -80,12 +80,23 @@ p{
 /* GESTION */
 .contentGestion{
     display: grid;
-    grid-template-columns: 60% 40%;
     padding: 0 0.5em;
+    grid-gap: 10px;
+    align-items: center;
+}
+@media screen and (min-width: 1920px) {
+  .contentGestion{
+    align-items: flex-start;
+    grid-template-columns: 60% 40%;
+  }
 }
 
 .contentGestion div:nth-child(2n){
-  padding-left: 1em;
+}
+@media only screen and (min-width: 1920px) {
+  .contentGestion div:nth-child(2n) {
+    padding-left: 1em;
+  }
 }
 
 .accordion .card {
@@ -124,4 +135,52 @@ p{
 
 .btn-close{
   filter: invert(1);
+}
+
+/* LOGIN */
+.signin{
+  max-width: 300px;
+  margin: 0 auto;
+}
+
+.signin > form{
+  display: grid;
+  flex-direction: column;
+}
+.signin > form > input{
+  margin-bottom: 10px;
+}
+
+/* SWAL MODAL */
+.swal-modal {
+  background-color: #232323;
+  /* border: 3px solid #FF6F00; */
+}
+
+.swal-title {
+  color: #EFEFEF;
+}
+
+.swal-text {
+  color: #a3a3a3;
+}
+
+
+.swal-button--confirm-watsy{
+  background-color: #FF6F00;
+  color: #EFEFEF;
+
+  }
+.swal-button--confirm-watsy:hover{
+  background-color: #ec6701 !important;
+}
+.swal-icon--success:after,
+.swal-icon--success::before{
+  background-color: transparent;
+}
+
+
+
+.swal-icon--success__hide-corners{
+  background-color: transparent;
 }

@@ -66,9 +66,61 @@ export const ButtonSecondary = styled.button`
   }
 `
 
+export const ButtonPrimary = styled.button`
+  background-color: #FF6F00;
+  font-size: 'Poppins';
+  width: 100%;
+  border: 2px solid transparent;
+  color: #FBFBFB;
+  font-size: 1.2em;
+  font-weight: 600;
+  border-radius: 0.5em;
+  padding: 6px;
+  margin-bottom: 10px;
+  cursor: pointer;
+
+  &:hover{
+    background-color: #d85e02;
+  }
+
+  &:disabled{
+    border-color: #b3b3b3;
+    cursor: no-drop;
+    color: #efefef;
+  }
+`
+
+export const ButtonPrimaryIcon = styled.button`
+  background-color: #FF6F00;
+  font-size: 'Poppins';
+  width: 100%;
+  border: 2px solid transparent;
+  color: #FBFBFB;
+  font-size: 1.2em;
+  font-weight: 600;
+  border-radius: 0.5em;
+  padding: 6px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  cursor: pointer;
+
+  &:hover{
+    background-color: #d85e02;
+  }
+
+  &:disabled{
+    border-color: #b3b3b3;
+    cursor: no-drop;
+    color: #efefef;
+  }
+`
+
 export const GroupButtons = styled.div`
   position: absolute;
-  top: 15%;
+  top: 7%;
   right: 2%;
 
   & button{

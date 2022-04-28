@@ -17,10 +17,10 @@ export const Subtitle = styled.label`
 
 `
 
-export const TitleMultiColor = ({ textNormal, textColorized }) => {
+export const TitleMultiColor = ({ textNormal, textColorized, classText }) => {
   return (
-    <Title>
-      {textNormal} <span>{textColorized}</span>
+    <Title className={classText}>
+      {textNormal}<span>{textColorized}</span>
     </Title>
   )
 }
@@ -29,15 +29,20 @@ export const TitleMultiColor = ({ textNormal, textColorized }) => {
 const ContentTitleLine = styled.div`
   margin-top: ${(props) => props.my || 0};
   margin-bottom: ${(props) => props.my || 0};
+  display: grid;
+  grid-template-columns: 1fr 0.8fr;
+  align-items: center;
+  padding-bottom: 0.5em;
+  border-bottom: 1px solid #FF6E00;
 `
 
-export const TextIndicador = ({ text, my = 0 }) => {
+export const TextIndicador = ({ children, text, my = 0 }) => {
   return (
     <ContentTitleLine my={my}>
       <Subtitle>
         {text}
       </Subtitle>
-      <hr />
+      {children}
     </ContentTitleLine>
   )
 }

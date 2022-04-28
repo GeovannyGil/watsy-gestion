@@ -1,5 +1,6 @@
 import { jsPDF } from 'jspdf'
 import { PDFObject } from 'react-pdfobject'
+import { format, setGlobalDateMasks } from 'fecha'
 import service from '../assets/img/service.png'
 import fontPBold from '../assets/fonts/Poppins-Bold-normal'
 import fontPSemibold from '../assets/fonts/Poppins-SemiBold-normal'
@@ -13,6 +14,11 @@ import logoPenales from '../assets/img/logoPenales.png'
 import logoPoliciales from '../assets/img/logoPoliciales.png'
 import logoSAT from '../assets/img/logoSAT.png'
 import logoAgenciaVirtual from '../assets/img/logoAgenciaVirtuales.png'
+
+setGlobalDateMasks({
+  myMask: 'DD/MM/YYYY',
+  myMask2: 'HH:mm A'
+})
 
 const Reporte = ({ dataClientReport }) => {
   // CREATE DOCUMENT PDF
@@ -56,17 +62,16 @@ const Reporte = ({ dataClientReport }) => {
   doc.setTextColor('#232323')
   doc.text('Fecha de tramite:', 378, 54)
   doc.setTextColor('#9F9E9E')
-  doc.text('25/48/45', 498, 54)
-
+  doc.text(format(new Date(), 'myMask'), 498, 54)
   doc.setTextColor('#232323')
   doc.text('Código de cliente:', 378, 71)
   doc.setTextColor('#9F9E9E')
-  doc.text('C-486789', 498, 71)
+  doc.text(dataClientReport.codeClient, 498, 71)
 
   doc.setTextColor('#232323')
-  doc.text('Gestión:', 378, 89)
+  doc.text('Hora:', 378, 89)
   doc.setTextColor('#9F9E9E')
-  doc.text('#4854', 498, 89)
+  doc.text(format(new Date(), 'myMask2'), 498, 89)
 
   // TITLE DATA GENERAL
   doc.setFont('Poppins-Bold', 'normal')
