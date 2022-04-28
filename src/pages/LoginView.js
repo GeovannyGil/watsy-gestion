@@ -138,6 +138,7 @@ export default function LoginView () {
 
   const [state, setCurrentState] = useState(0)
   const [error, setError] = useState('')
+  const [viewPassword, setViewPassword] = useState('password')
 
   const emailRef = useRef(null)
   const passwordRef = useRef(null)
@@ -183,29 +184,40 @@ export default function LoginView () {
     return <div>Estas autenticado pero no registrado...</div>
   }
 
+  function handleViewPassword () {
+    if (viewPassword === 'password') {
+      setViewPassword('text')
+    } else {
+      setViewPassword('password')
+    }
+  }
+
   if (state === 4) {
     return (
       <ContentLogin>
         <Logo src={logoGestiones} />
         <ContentLoginForm>
-          <TitleLogin>Iniciar Sesión<span>.</span></TitleLogin>
-          <ContactSupport>Contactarme a <a href='/signup'> soporte técnico</a></ContactSupport>
-          {error !== '' && <ErrorMessage>{error}</ErrorMessage>}
-          <InputLogin>
-            <label>Correo Electrónico</label>
-            <input ref={emailRef} type='email' />
-          </InputLogin>
-          <InputLogin>
-            <label>Contraseña</label>
-            <input type='password' ref={passwordRef} />
-            <ButtonOnInput>
-              <Ai.AiFillEyeInvisible />
-            </ButtonOnInput>
-          </InputLogin>
-          <ButtonPrimaryLogin onClick={handleOnClickSignIn}>
-            Iniciar Sesión
-          </ButtonPrimaryLogin>
-          <ContactSupport className='lcs2ar'>Contactarme a <a href='/signup'> soporte técnico</a></ContactSupport>
+          <form onSubmit={handleOnClickSignIn}>
+            <TitleLogin>Iniciar Sesión<span>.</span></TitleLogin>
+            <ContactSupport>Contactarme a <a href='/signup'> soporte técnico</a></ContactSupport>
+            {error !== '' && <ErrorMessage>{error}</ErrorMessage>}
+            <InputLogin>
+              <label>Correo Electrónico</label>
+              <input ref={emailRef} type='email' />
+            </InputLogin>
+            <InputLogin>
+              <label>Contraseña</label>
+              <input type={viewPassword} ref={passwordRef} />
+              <ButtonOnInput onClick={handleViewPassword}>
+                <Ai.AiFillEyeInvisible />
+              </ButtonOnInput>
+            </InputLogin>
+            <ButtonPrimaryLogin onClick={handleOnClickSignIn}>
+              Iniciar Sesión
+            </ButtonPrimaryLogin>
+            <ContactSupport className='lcs2ar'>Contactarme a <a href='/signup'> soporte técnico</a></ContactSupport>
+          </form>
+
           {/* <form action=''>
             <h1>Signin</h1>
             <input type='email' placeholder='Email' ref={emailRef} />

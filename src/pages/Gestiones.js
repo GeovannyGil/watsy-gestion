@@ -211,6 +211,12 @@ export default function Gestiones () {
     gestionNit: false,
     agenciaVirtual: false
   })
+  const [showPassword, setShowPassword] = useState({
+    general: 'password',
+    penales: 'password',
+    policiales: 'password',
+    agenciaVirtual: 'password'
+  })
   const [dataClientReport, setDataClientReport] = useState({})
   const [show, setShow] = useState(false)
   const [stateSave, setStateSave] = useState(false)
@@ -249,19 +255,19 @@ export default function Gestiones () {
   }
 
   function handleShow () {
-    if (checkState.penales === false && checkState.policiales === false && checkState.gestionNit === false && checkState.agenciaVirtual === false) {
-      toast.error('Seleccione al menos una gestíón para generar el reporte', {
-        position: 'bottom-center',
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: 'dark'
-      })
-      return
-    }
+    // if (checkState.penales === false && checkState.policiales === false && checkState.gestionNit === false && checkState.agenciaVirtual === false) {
+    //   toast.error('Seleccione al menos una gestíón para generar el reporte', {
+    //     position: 'bottom-center',
+    //     autoClose: 3000,
+    //     hideProgressBar: false,
+    //     closeOnClick: true,
+    //     pauseOnHover: true,
+    //     draggable: true,
+    //     progress: undefined,
+    //     theme: 'dark'
+    //   })
+    //   return
+    // }
     generateDateForReport()
     setShow(true)
   }
@@ -613,6 +619,18 @@ export default function Gestiones () {
     })
   }
 
+  function handleViewPassword (input) {
+    let type = showPassword[input]
+
+    if (type === 'password') {
+      type = 'text'
+    } else {
+      type = 'password'
+    }
+
+    setShowPassword({ ...showPassword, [input]: type })
+  }
+
   if (state === 0) {
     return (
       <AuthProvider
@@ -816,9 +834,9 @@ export default function Gestiones () {
                     <button onClick={() => handleOnCopy('password')} data-tip data-for='copyTooltip'><Io.IoMdCopy /></button>
                   </GroupButtons>
                   <label>Contraseña</label>
-                  <input value={dataClient.password} type='password' name='password' onChange={handleOnChange} tabIndex='14' />
+                  <input value={dataClient.password} type={showPassword.general} name='password' onChange={handleOnChange} tabIndex='14' />
                   <ButtonOnInput>
-                    <Ai.AiFillEyeInvisible />
+                    <Ai.AiFillEyeInvisible onClick={() => handleViewPassword('general')} />
                   </ButtonOnInput>
                 </Input>
               </GroupGridContentDouble>
@@ -861,9 +879,9 @@ export default function Gestiones () {
                           <button onClick={() => handleOnCopy('passwordPenales', 'penales')} data-tip data-for='copyTooltip'><Io.IoMdCopy /></button>
                         </GroupButtons>
                         <label>Contraseña</label>
-                        <input type='password' value={penales.passwordPenales} name='passwordPenales' onChange={handleOnChangePenales} />
+                        <input type={showPassword.penales} value={penales.passwordPenales} name='passwordPenales' onChange={handleOnChangePenales} />
                         <ButtonOnInput>
-                          <Ai.AiFillEyeInvisible />
+                          <Ai.AiFillEyeInvisible onClick={() => handleViewPassword('penales')} />
                         </ButtonOnInput>
                       </Input>
                     </div>
@@ -900,9 +918,9 @@ export default function Gestiones () {
                           <button onClick={() => handleOnCopy('passwordPoliciales', 'policiales')} data-tip data-for='copyTooltip'><Io.IoMdCopy /></button>
                         </GroupButtons>
                         <label>Contraseña</label>
-                        <input type='password' name='passwordPoliciales' value={policiales.passwordPoliciales} onChange={handleOnChangePoliciales} />
+                        <input type={showPassword.policiales} name='passwordPoliciales' value={policiales.passwordPoliciales} onChange={handleOnChangePoliciales} />
                         <ButtonOnInput>
-                          <Ai.AiFillEyeInvisible />
+                          <Ai.AiFillEyeInvisible onClick={() => handleViewPassword('policiales')} />
                         </ButtonOnInput>
                       </Input>
                       <Input marginBottom='15px'>
@@ -976,9 +994,9 @@ export default function Gestiones () {
                           <button onClick={() => handleOnCopy('passwordAgencia', 'agenciaVirtual')} data-tip data-for='copyTooltip'><Io.IoMdCopy /></button>
                         </GroupButtons>
                         <label>Contraseña</label>
-                        <input type='password' value={agenciaVirtual.passwordAgencia} name='passwordAgencia' onChange={handleOnAgenciaVirtual} />
+                        <input type={showPassword.agenciaVirtual} value={agenciaVirtual.passwordAgencia} name='passwordAgencia' onChange={handleOnAgenciaVirtual} />
                         <ButtonOnInput>
-                          <Ai.AiFillEyeInvisible />
+                          <Ai.AiFillEyeInvisible onClick={() => handleViewPassword('agenciaVirtual')} />
                         </ButtonOnInput>
                       </Input>
                     </div>

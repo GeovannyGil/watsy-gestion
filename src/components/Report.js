@@ -110,7 +110,9 @@ const Reporte = ({ dataClientReport }) => {
   doc.setFont('Poppins-Bold', 'normal')
   doc.setFontSize(19)
   doc.setTextColor('#232323')
-  doc.text('DATOS DE LOS SERVICIOS', width / 2, 294, { align: 'center', charSpace: 0.5 })
+  if ((dataClientReport.gestiones.penales === true) || (dataClientReport.gestiones.gestionNit === true) || (dataClientReport.gestiones.policiales === true) || (dataClientReport.gestiones.agenciaVirtual === true) || (dataClientReport.gestiones.penales === true)) {
+    doc.text('DATOS DE LOS SERVICIOS', width / 2, 294, { align: 'center', charSpace: 0.5 })
+  }
 
   // DATA ANTECEDENTES PENALES
   // SE SUMA 88 DESPUES DE CADA SERVICIO
