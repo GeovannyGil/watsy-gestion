@@ -27,6 +27,11 @@ const Reporte = ({ dataClientReport }) => {
 
   // VARIABLES
   let textPositionDataClient = 190.5
+  doc.setProperties({
+    title: `${dataClientReport.names} ${dataClientReport.lastNames}`,
+    author: 'Watsy S.A.',
+    creator: 'Watsy S.A.'
+  })
   // ADD CUSTIOM FILE FONT
   // POPPINS BOLD
   doc.addFileToVFS('Poppins-Bold.ttf', fontPBold)
