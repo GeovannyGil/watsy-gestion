@@ -23,10 +23,7 @@ setGlobalDateMasks({
 const Reporte = ({ dataClientReport }) => {
   // CREATE DOCUMENT PDF
   // eslint-disable-next-line new-cap
-  const doc = new jsPDF({
-    unit: 'pt',
-    format: 'letter'
-  })
+  const doc = new jsPDF('p', 'pt', 'letter', true)
 
   // VARIABLES
   let textPositionDataClient = 190.5
@@ -49,9 +46,9 @@ const Reporte = ({ dataClientReport }) => {
   const height = doc.internal.pageSize.getHeight()
 
   // Background image
-  doc.addImage(backgroundReport, 'PNG', 0, 0, width, height)
+  doc.addImage(backgroundReport, 'PNG', 0, 0, width, height, undefined, 'FAST')
   // IMAGE OF SERVICE
-  doc.addImage(service, 'PNG', 41.5, 42, 175.7375, 48.48)
+  doc.addImage(service, 'PNG', 41.5, 42, 175.7375, 48.48, undefined, 'MEDIUM')
 
   // DATA HEAD
   // Codigo de cliente
@@ -119,8 +116,8 @@ const Reporte = ({ dataClientReport }) => {
   let positionRectangle = 322
   doc.setFontSize(10)
   if (dataClientReport.gestiones.penales === true) {
-    doc.addImage(squarePenales, 'PNG', 91, positionRectangle, 430, 71)
-    doc.addImage(logoPenales, 'PNG', 102, positionRectangle + 30, 28, 30)
+    doc.addImage(squarePenales, 'PNG', 91, positionRectangle, 430, 71, undefined, 'FAST')
+    doc.addImage(logoPenales, 'PNG', 102, positionRectangle + 30, 28, 30, undefined, 'FAST')
 
     doc.setTextColor('#232323')
     doc.setFont('Poppins-SemiBold', 'normal')
@@ -142,8 +139,8 @@ const Reporte = ({ dataClientReport }) => {
 
   // DATA ANTECEDENTES POLICIALES
   if (dataClientReport.gestiones.policiales === true) {
-    doc.addImage(squarePenales, 'PNG', 91, positionRectangle, 430, 71)
-    doc.addImage(logoPoliciales, 'PNG', 102, positionRectangle + 30, 28, 30)
+    doc.addImage(squarePenales, 'PNG', 91, positionRectangle, 430, 71, undefined, 'FAST')
+    doc.addImage(logoPoliciales, 'PNG', 102, positionRectangle + 30, 28, 30, undefined, 'FAST')
 
     doc.setFont('Poppins-SemiBold', 'normal')
     doc.setTextColor('#232323')
@@ -165,8 +162,8 @@ const Reporte = ({ dataClientReport }) => {
 
   // DATA NIT
   if (dataClientReport.gestiones.gestionNit === true) {
-    doc.addImage(squarePenales, 'PNG', 91, positionRectangle, 430, 71)
-    doc.addImage(logoSAT, 'PNG', 102, positionRectangle + 30, 28, 30)
+    doc.addImage(squarePenales, 'PNG', 91, positionRectangle, 430, 71, undefined, 'FAST')
+    doc.addImage(logoSAT, 'PNG', 102, positionRectangle + 30, 28, 30, undefined, 'FAST')
 
     doc.setFont('Poppins-SemiBold', 'normal')
     doc.setTextColor('#232323')
@@ -183,8 +180,8 @@ const Reporte = ({ dataClientReport }) => {
 
   // DATA GENCIA VIRTUAL
   if (dataClientReport.gestiones.agenciaVirtual === true) {
-    doc.addImage(squarePenales, 'PNG', 91, positionRectangle, 430, 71)
-    doc.addImage(logoAgenciaVirtual, 'PNG', 102, positionRectangle + 30, 28, 30)
+    doc.addImage(squarePenales, 'PNG', 91, positionRectangle, 430, 71, undefined, 'FAST')
+    doc.addImage(logoAgenciaVirtual, 'PNG', 102, positionRectangle + 30, 28, 30, undefined, 'FAST')
 
     doc.setFont('Poppins-SemiBold', 'normal')
     doc.setTextColor('#232323')
