@@ -3,9 +3,10 @@ import styled from 'styled-components'
 import * as Io from 'react-icons/io'
 import * as Ai from 'react-icons/ai'
 import * as Hi from 'react-icons/hi'
+import * as Bi from 'react-icons/bi'
 import { TextIndicador, TitleMultiColor } from '../components/Elements/Text'
 import { Input, InputSelect, TextArea } from '../components/Elements/Inputs'
-import { ButtonOnInput, ButtonIconAlone, ButtonSecondary, GroupButtons } from '../components/Elements/Buttons'
+import { ButtonOnInput, ButtonLinkIconSecondary, ButtonIconAlone, GroupButtons } from '../components/Elements/Buttons'
 // import { FileComponent } from '../components/Files/Files'
 import NumberFormat from 'react-number-format'
 import ReactTooltip from 'react-tooltip'
@@ -288,6 +289,7 @@ export default function Gestiones () {
       setNitService({ ...data.nitService })
       setAgenciaVirtual({ ...data.agenciaVirtual })
       setOtherService({ ...data.otherService })
+      setCheckState({ ...data.activeServices })
       setStateUpdate(true)
     }
     if (params?.docId) {
@@ -459,6 +461,7 @@ export default function Gestiones () {
     data.nitService = { ...nitSevice }
     data.otherService = { ...otherService }
     data.agenciaVirtual = { ...agenciaVirtual }
+    data.activeServices = { ...checkState }
     data.createdAt = format(new Date(), 'myMaskComplete')
     return data
   }
@@ -694,6 +697,9 @@ export default function Gestiones () {
           <ReactTooltip place='top' id='membresia' type='dark' effect='solid'>
             <span>Esta función require una membresía</span>
           </ReactTooltip>
+          <ReactTooltip place='top' id='link' type='dark' effect='solid'>
+            <span>Presiona para ir al sitio web</span>
+          </ReactTooltip>
           <ReactTooltip place='top' id='saveData' type='dark' effect='solid'>
             <span>Guardar datos del cliente</span>
           </ReactTooltip>
@@ -886,7 +892,8 @@ export default function Gestiones () {
                       </Input>
                     </div>
                     <div>
-                      <ButtonSecondary data-tip data-for='membresia'>Subir Archivo</ButtonSecondary>
+                      <ButtonLinkIconSecondary href='https://portal.oj.gob.gt/oauth/3/login/' target='_blank' data-tip data-for='link'><Bi.BiLinkExternal /> Login Antecedentes</ButtonLinkIconSecondary>
+                      <ButtonLinkIconSecondary href='https://portal.oj.gob.gt/oauth/registro' target='_blank' data-tip data-for='link'><Bi.BiLinkExternal /> Registrarse Antecedentes</ButtonLinkIconSecondary>
                     </div>
                   </div>
                 </Card.Body>
@@ -941,7 +948,8 @@ export default function Gestiones () {
                       </Input>
                     </div>
                     <div>
-                      <ButtonSecondary data-tip data-for='membresia'>Subir Archivo</ButtonSecondary>
+                      <ButtonLinkIconSecondary href='https://policiales.pnc.gob.gt/login/' target='_blank' data-tip data-for='link'><Bi.BiLinkExternal /> Login Policiales</ButtonLinkIconSecondary>
+                      <ButtonLinkIconSecondary href='https://policiales.pnc.gob.gt/autoregistro/' target='_blank' data-tip data-for='link'><Bi.BiLinkExternal /> Registrarse Policiales</ButtonLinkIconSecondary>
                     </div>
                   </div>
                 </Card.Body>
@@ -962,7 +970,10 @@ export default function Gestiones () {
                       <TextArea placeholder='Datos adicionales de la creación del nit' name='otherData' value={nitSevice.otherData} onChange={handleOnChangeNit} />
                     </div>
                     <div>
-                      <ButtonSecondary data-tip data-for='membresia'>Subir Archivo</ButtonSecondary>
+                      <ButtonLinkIconSecondary href='https://portal.sat.gob.gt/portal/solicitud-electronica-de-nit/' target='_blank' data-tip data-for='link'><Bi.BiLinkExternal /> Solicitar NIT</ButtonLinkIconSecondary>
+                      <ButtonLinkIconSecondary href='https://portal.sat.gob.gt/portal/consulta-cui-nit/' target='_blank' data-tip data-for='link'><Bi.BiLinkExternal /> Consultar CUI/NIT</ButtonLinkIconSecondary>
+                      <ButtonLinkIconSecondary href='https://portal.sat.gob.gt/portal/consulta-registro-tributario-unificado/' target='_blank' data-tip data-for='link'><Bi.BiLinkExternal /> Impresión de RTU</ButtonLinkIconSecondary>
+                      <ButtonLinkIconSecondary href='https://portal.sat.gob.gt/portal/' target='_blank' data-tip data-for='link'><Bi.BiLinkExternal /> PORTAL SAT</ButtonLinkIconSecondary>
                     </div>
                   </div>
                 </Card.Body>
@@ -1001,7 +1012,8 @@ export default function Gestiones () {
                       </Input>
                     </div>
                     <div>
-                      <ButtonSecondary data-tip data-for='membresia'>Subir Archivo</ButtonSecondary>
+                      <ButtonLinkIconSecondary href='https://portal.sat.gob.gt/portal/solicitud-usuario-agencia-virtual/#link-agenciavirtual' target='_blank' data-tip data-for='link'><Bi.BiLinkExternal /> Solicitud de Agencia Virtual</ButtonLinkIconSecondary>
+                      <ButtonLinkIconSecondary href='https://portal.sat.gob.gt/portal/' target='_blank' data-tip data-for='link'><Bi.BiLinkExternal /> PORTAL SAT</ButtonLinkIconSecondary>
                     </div>
                   </div>
                 </Card.Body>
