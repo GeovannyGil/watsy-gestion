@@ -3,10 +3,9 @@ import { initializeApp } from 'firebase/app'
 import { getAnalytics } from 'firebase/analytics'
 import { getAuth } from 'firebase/auth'
 // eslint-disable-next-line
-import { getStorage, ref, uploadBytes, getDownloadURL, getBytes } from 'firebase/storage'
+import { getStorage, ref, uploadBytes, uploadBytesResumable, getDownloadURL, getBytes, deleteObject } from 'firebase/storage'
 // eslint-disable-next-line
 import { getFirestore, collection, addDoc, getDocs, doc, getDoc, query, where, setDoc, deleteDoc } from 'firebase/firestore'
-
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -15,6 +14,7 @@ import { getFirestore, collection, addDoc, getDocs, doc, getDoc, query, where, s
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_API_KEY,
   authDomain: process.env.REACT_APP_AUTH_DOMAIN,
+  databaseURL: process.env.REACT_APP_DATABASE_URL,
   projectId: process.env.REACT_APP_PROJECT_ID,
   storageBucket: process.env.REACT_APP_STORAGE_BUCKET,
   messagingSenderId: process.env.REACT_APP_MESSAGING_SENDER_ID,
@@ -157,6 +157,77 @@ export async function deleteClient (docId) {
 
 export async function logout () {
   await auth.signOut()
+}
+
+export async function setFileClient (uid, name, file, fileStateUpdate, stateUploads) {
+  try {
+    const storageRef = ref(storage, `clients/${uid}/${name}`)
+    const uploadTask = uploadBytesResumable(storageRef, file)
+    return new Promise(resolve => uploadTask.on('state_changed',
+      (snapshot) => {
+        // Observe state change events such as progress, pause, and resume
+        // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+        console.log('Upload is ' + progress + '% done')
+        switch (snapshot.state) {
+          case 'paused':
+            console.log('Upload is paused')
+            break
+          case 'running':
+            console.log('Upload is running')
+            console.log(stateUploads)
+            break
+          default:
+            console.log('Upload is in default state')
+        }
+      },
+      (error) => {
+        console.error(error)
+      },
+      () => {
+        // Handle successful uploads on complete
+        // For instance, get the download URL: https://firebasestorage.googleapis.com/...
+        // getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+        //   console.log('File available at', downloadURL)
+        // })
+        fileStateUpdate(name)
+        console.log('Se Termino de subir el archivo')
+        return resolve(true)
+      }
+    ))
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+export async function getFileClient (path) {
+  try {
+    const imageRef = ref(storage, path)
+
+    const url = await getDownloadURL(imageRef)
+    return url
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+export async function deleteFileClient (uid, name, fileStateDelete) {
+  try {
+    // Create a reference to the file to delete
+    const desertRef = ref(storage, `clients/${uid}/${name}`)
+    // Delete the file
+    return new Promise(resolve => {
+      deleteObject(desertRef).then(() => {
+        // File deleted successfully
+        return resolve(true)
+      }).catch((error) => {
+        // Uh-oh, an error occurred!
+        console.error(error)
+      })
+    })
+  } catch (error) {
+    console.error(error)
+  }
 }
 
 // export async function getClient (uid) {

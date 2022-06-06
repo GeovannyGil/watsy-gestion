@@ -96,7 +96,7 @@ export default function Clients () {
   }
 
   function handleSearch (e) {
-    const q = e.target.value
+    const q = e.target.value.toLowerCase()
 
     if (q === '') {
       setClientsFilter([...clients])
@@ -135,7 +135,7 @@ export default function Clients () {
               clientsFilter.length !== 0
                 ? clientsFilter.map((client) => (
                   <ItemClient
-                    key={client.id}
+                    key={client.docId}
                     client={client}
                     onView={() => navigate(`/client/${client.id}`)}
                   />

@@ -7,7 +7,9 @@ import * as Bi from 'react-icons/bi'
 import { TextIndicador, TitleMultiColor } from '../components/Elements/Text'
 import { Input, InputSelect, TextArea } from '../components/Elements/Inputs'
 import { ButtonOnInput, ButtonLinkIconSecondary, ButtonIconAlone, GroupButtons } from '../components/Elements/Buttons'
-// import { FileComponent } from '../components/Files/Files'
+// eslint-disable-next-line
+import { FileComponent } from '../components/Files/Files'
+import UploadFiles from '../components/UploadFiles/UploadFiles'
 import NumberFormat from 'react-number-format'
 import ReactTooltip from 'react-tooltip'
 import { v4 as uuidv4 } from 'uuid'
@@ -18,10 +20,12 @@ import swal from 'sweetalert'
 // SERVICES
 import { dataMovies } from '../services/movies'
 import { placesData } from '../services/places'
-import { insertNewClient, updateClient as updateClientFirestore, deleteClient as deleteClientFirestore, getClientInfo } from '../services/firebase/firebase'
+// eslint-disable-next-line
+import { insertNewClient, updateClient as updateClientFirestore, deleteClient as deleteClientFirestore, getClientInfo, setFileClient, getFileClient, deleteFileClient, deleteFolderClient } from '../services/firebase/firebase'
 
 // Hooks
-import { useState, useEffect } from 'react'
+// eslint-disable-next-line
+import { useState, useEffect, useRef, createContext } from 'react'
 
 // Toast
 import { toast } from 'react-toastify'
@@ -31,6 +35,9 @@ import 'react-toastify/dist/ReactToastify.css'
 import { removeAccents } from '../Utils/TextFormat'
 import randomNumb from '../Utils/randomNumber'
 import axios from 'axios'
+// eslint-disable-next-line
+import { PDFObject } from 'react-pdfobject'
+import { saveAs } from 'file-saver'
 
 // ACORDEON
 import 'bootstrap/dist/css/bootstrap.min.css'
@@ -117,28 +124,21 @@ const GridInputs = styled.div`
   }
 
 `
-// const LayoutUpload = styled.div`
-//   width: 100%;
-//   height: 14rem;
-//   display: grid;
-//   grid-template-columns: 1fr 1fr;
-// `
+const LayoutUpload = styled.div`
+  width: 100%;
+  /* height: 14rem; */
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: start;
+`
 
-// const Upload = styled.div`
-//   width: 100%;
-//   padding: 20px;
-//   border: 2px dashed #FF5F00;
-//   background-color: #171717;
-//   border-radius: 1em;
-// `
-
-// const ContentFiles = styled.div`
-//   padding: 0 0 0 20px;
-//   display: grid;
-//   grid-template-columns: 1fr;
-//   grid-gap: 15px;
-//   align-content: center;
-// `
+const ContentFiles = styled.div`
+  padding: 0 0 0 20px;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-gap: 5px;
+  align-content: center;
+`
 
 const GroupButtonsHeaderActions = styled.div`
   display: flex;
@@ -166,6 +166,26 @@ function ShowModalReport ({ show, onSetShow, data }) {
     </Modal>
   )
 }
+
+function ShowModalPDF ({ show, onSetShow, file }) {
+  return (
+    <Modal show={show} fullscreen onHide={() => onSetShow(false)}>
+      <Modal.Header closeButton>
+        <Modal.Title>{file.name}</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <PDFObject
+          url={file.url}
+          width='100%'
+          height='100%'
+          containerId='PDFOBJECTREPORT'
+        />
+      </Modal.Body>
+    </Modal>
+  )
+}
+
+// export const CleanUploadFile = createContext()
 
 export default function Gestiones () {
   const [dataClient, setDataClient] = useState({
@@ -218,14 +238,21 @@ export default function Gestiones () {
     policiales: 'password',
     agenciaVirtual: 'password'
   })
+  // eslint-disable-next-line
+  const [filesClientUrl, setFilesClientUrl] = useState([])
+  const [filesClientUrlCopy, setFilesClientUrlCopy] = useState([])
+  const [tmpFiles, setTmpFiles] = useState([])
+  // const fileRef = useRef(null)
   const [dataClientReport, setDataClientReport] = useState({})
   const [show, setShow] = useState(false)
+  const [showPDF, setShowPDF] = useState(false)
+  const [pdfActive, setPdfActive] = useState({})
   const [stateSave, setStateSave] = useState(false)
-  // eslint-disable-next-line
-  const [stateUpdate, setStateUpdate] = useState(false)
   // eslint-disable-next-line
   const [currentUser, setCurrentUser] = useState({})
   const [state, setState] = useState(0)
+  const [deleteFile, setDeleteFile] = useState(false)
+  // const [stateClean, setStateClean] = useState(false)
   const params = useParams()
   const navigate = useNavigate()
 
@@ -290,12 +317,40 @@ export default function Gestiones () {
       setAgenciaVirtual({ ...data.agenciaVirtual })
       setOtherService({ ...data.otherService })
       setCheckState({ ...data.activeServices })
-      setStateUpdate(true)
+      if (data?.filesUrl) {
+        setFilesClientUrl([...data.filesUrl])
+        if (data.filesUrl.length > 0) {
+          const filesUrlFormated = data.filesUrl.map(async file => {
+            return {
+              ...file,
+              url: await getFileClient(file.url)
+            }
+          })
+          const promiseResolve = await Promise.all(filesUrlFormated)
+          setFilesClientUrlCopy(promiseResolve)
+        }
+      } else {
+        setFilesClientUrl([])
+      }
     }
     if (params?.docId) {
       fetchData()
     }
   }, [params.docId])
+
+  useEffect(() => {
+    if (tmpFiles.length > 0) {
+      const data = generateDataClientComplete()
+      updateClient(dataClient.docId, data)
+    }
+
+    if (deleteFile) {
+      const data = generateDataClientComplete()
+      updateClient(dataClient.docId, data)
+      setDeleteFile(false)
+    }
+    // eslint-disable-next-line
+  }, [filesClientUrl])
 
   function handleOnChange (e, label = '') {
     const data = { ...dataClient }
@@ -462,7 +517,23 @@ export default function Gestiones () {
     data.otherService = { ...otherService }
     data.agenciaVirtual = { ...agenciaVirtual }
     data.activeServices = { ...checkState }
-    data.createdAt = format(new Date(), 'myMaskComplete')
+    data.filesUrl = [...filesClientUrl]
+    // if (tmpFiles.length > 0) {
+    //   tmpFiles.forEach((fileU) => {
+    //     data.filesUrl.push({
+    //       id: uuidv4(),
+    //       name: fileU.name,
+    //       type: fileU.type,
+    //       ext: fileU.type.split('/')[1],
+    //       url: `clients/${dataClient.id}/${fileU.name}`
+    //     })
+    //   })
+    // }
+    // console.log(data.filesUrl)
+    data.updateAt = format(new Date(), 'myMaskComplete')
+    if (dataClient?.docId) {
+      data.createdAt = format(new Date(), 'myMaskComplete')
+    }
     return data
   }
 
@@ -491,8 +562,16 @@ export default function Gestiones () {
   }
 
   async function handleOnUpdateData () {
-    const data = generateDataClientComplete()
-    updateClient(dataClient.docId, data)
+    try {
+      if (tmpFiles && tmpFiles.length > 0) {
+        await saveFile()
+      } else {
+        const data = generateDataClientComplete()
+        updateClient(dataClient.docId, data)
+      }
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   async function updateClient (docId, data) {
@@ -508,12 +587,17 @@ export default function Gestiones () {
         progress: undefined,
         theme: 'dark'
       })
+      if (tmpFiles.length > 0) {
+        // setStateClean(true)
+        // navigate(`/gestiones/${dataClient.docId}`)
+        window.location.href = `/gestiones/${dataClient.docId}`
+      }
     } catch (error) {
-      // console.log(error)
+      console.log(error)
     }
   }
 
-  function handleOnDeleteData () {
+  async function handleOnDeleteData () {
     swal({
       title: 'Deseas eliminar al cliente?',
       icon: 'warning',
@@ -532,24 +616,42 @@ export default function Gestiones () {
       dangerMode: true,
       text: 'Si eliminas al cliente no podras recuperarlo'
     })
-      .then((willDelete) => {
+      .then(async (willDelete) => {
         if (willDelete) {
-          deleteClient(dataClient.docId)
-          swal('El cliente se elimino correctamente', {
-            icon: 'success',
-            buttons: {
-              confirm: {
-                text: 'Aceptar',
-                value: true,
-                visible: true,
-                className: 'swal-button--confirm-watsy'
+          if (filesClientUrl.length > 0) {
+            const fileDeletes = filesClientUrl.map(async fileU => await deleteFileClient(dataClient.docId, fileU.name))
+            Promise.all(fileDeletes).then(response => {
+              deleteClient(dataClient.docId)
+              swal('El cliente se elimino correctamente', {
+                icon: 'success',
+                buttons: {
+                  confirm: {
+                    text: 'Aceptar',
+                    value: true,
+                    visible: true,
+                    className: 'swal-button--confirm-watsy'
+                  }
+                }
+              })
+            })
+          } else {
+            deleteClient(dataClient.docId)
+            swal('El cliente se elimino correctamente', {
+              icon: 'success',
+              buttons: {
+                confirm: {
+                  text: 'Aceptar',
+                  value: true,
+                  visible: true,
+                  className: 'swal-button--confirm-watsy'
+                }
               }
-            }
-          })
+            })
+          }
         }
       })
   }
-
+  // eslint-disable-next-line
   async function deleteClient (docId) {
     try {
       await deleteClientFirestore(docId)
@@ -634,6 +736,74 @@ export default function Gestiones () {
     setShowPassword({ ...showPassword, [input]: type })
   }
 
+  const onFileList = (files) => {
+    setTmpFiles(files)
+  }
+
+  function fileStateUpdate (filename) {
+    toast.success(`${filename} subido correctamente`,
+      {
+        position: 'bottom-center',
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'dark'
+      }
+    )
+  }
+
+  const saveFile = async () => {
+    toast.info('Espera a que los archivos se suban, la pagina se recargara automaticamente',
+      {
+        position: 'bottom-center',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'dark'
+      })
+    const fileUploads = tmpFiles.map(async fileU => await setFileClient(dataClient.docId, fileU.name, fileU, fileStateUpdate))
+    Promise.all(fileUploads).then(response => {
+      const filesNew = tmpFiles.map(fileU => {
+        return {
+          id: uuidv4(),
+          name: fileU.name,
+          type: fileU.type,
+          ext: fileU.type.split('/')[1],
+          url: `clients/${dataClient.docId}/${fileU.name}`
+        }
+      })
+      console.log('Archivos nuevos', filesNew)
+      setFilesClientUrl([...filesClientUrl, ...filesNew])
+    })
+
+    //   const fileReader = new FileReader()
+    //   if (fileReader && file) {
+    //     fileReader.readAsArrayBuffer(file)
+    //     fileReader.onload = async () => {
+    //       const fileData = fileReader.result
+
+    //       const res = await setFileClient(dataClient.id, file.name, fileData)
+    //       console.log('Respuesta de SaveFile', res)
+    //       if (res) {
+    //         return res.metadata.fullPath
+    //       }
+    //     }
+    //   }
+    // }
+  }
+
+  // eslint-disable-next-line
+  async function getFileUrlClient (pathClient) {
+    const url = await getFileClient(pathClient)
+    return url
+  }
+
   if (state === 0) {
     return (
       <AuthProvider
@@ -642,6 +812,40 @@ export default function Gestiones () {
         onUserNotLoggedIn={handleUserNotLoggedIn}
       />
     )
+  }
+
+  function onSetPDF (url) {
+    setPdfActive(url)
+    setShowPDF(true)
+  }
+
+  async function onHandleDelete (fileName, fileId) {
+    deleteFileClient(dataClient.docId, fileName).then(response => {
+      if (response) {
+        setFilesClientUrl(filesClientUrl.filter(file => file.id !== fileId))
+        setFilesClientUrlCopy(filesClientUrlCopy.filter(file => file.id !== fileId))
+        toast.success('Se elimino el archivo correctamente',
+          {
+            position: 'bottom-center',
+
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: 'dark'
+          })
+        setDeleteFile(true)
+      } else {
+        console.log('Hubo un error al eliminar el archivo')
+      }
+    })
+  }
+
+  async function onHandleDownload (file) {
+    // get file blob from url axios with CORS
+    saveAs(file.url, file.name)
   }
 
   return (
@@ -847,14 +1051,37 @@ export default function Gestiones () {
                 </Input>
               </GroupGridContentDouble>
             </GridInputs>
-            {/* <TextIndicador text='Archivos Adjuntos' my='15px' />
-            <LayoutUpload>
-              <Upload />
-              <ContentFiles>
-                <FileComponent />
-                <FileComponent />
-              </ContentFiles>
-            </LayoutUpload> */}
+            {
+              dataClient?.docId && (
+                <>
+                  <TextIndicador text='Archivos Adjuntos' my='15px' />
+                  <LayoutUpload>
+                    {/* <CleanUploadFile.Provider value={[stateClean, setStateClean]}> */}
+                    <UploadFiles onFileList={onFileList} />
+                    {/* </CleanUploadFile.Provider> */}
+                    <ContentFiles>
+                      {
+                        filesClientUrlCopy.map(file => {
+                          if (file.ext === 'png' || file.ext === 'jpg' || file.ext === 'jpeg') {
+                            return (
+                              <FileComponent key={file.id} file={file} onHandleDelete={onHandleDelete} />
+                            )
+                          } else if (file.ext === 'pdf') {
+                            return (
+                              <FileComponent key={file.id} file={file} onSetPDF={onSetPDF} onHandleDelete={onHandleDelete} />
+                            )
+                          } else {
+                            return (
+                              <FileComponent key={file.id} file={file} onDownload={onHandleDownload} onHandleDelete={onHandleDelete} />
+                            )
+                          }
+                        })
+                      }
+                    </ContentFiles>
+                  </LayoutUpload>
+                </>
+              )
+            }
           </ContentBody>
         </ContentSpaceGestion>
         <ContentGestionesDocs>
@@ -1035,6 +1262,9 @@ export default function Gestiones () {
         </ContentGestionesDocs>
         {
           show ? <ShowModalReport show={show} onSetShow={setShow} data={dataClientReport} /> : ''
+        }
+        {
+          showPDF ? <ShowModalPDF show={showPDF} onSetShow={setShowPDF} file={pdfActive} /> : ''
         }
       </Content>
     </Sidebar>
